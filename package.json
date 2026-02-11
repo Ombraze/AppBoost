@@ -1,0 +1,14 @@
+{
+  "name": "emtp-express",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.ts",
+  "scripts": {
+    "dev": "tsx server.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql2": "^3.17.0"
+  }
+}
