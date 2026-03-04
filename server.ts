@@ -1,7 +1,7 @@
 // l'ensemble des imports 
 
 import express from 'express';
-import userRouter from '../routes/users.routes.js';
+import userRouter from './routes/users.routes.js';
 
 const app = express();
 const PORT: number = 4000;
