@@ -9,8 +9,11 @@ const PORT: number = 4000;
 // utilise les routes 
 app.use(express.json());
 app.use(userRouter);
+app.use(express.urlencoded({ extended: true }));
 
 // écouter sur un port
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+export default app;

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import * as bcrypt from "bcrypt";
-import { createUserRecord } from "../repositories/user.repository.js";
+import { createUserRecord, getUserByUsername, getUserByEmail } from "../repositories/user.repository.js";
 
 
 const hashPassword = async (password: string): Promise<string> => {
@@ -12,7 +12,7 @@ const comparePassword = async (password: string, hash: string): Promise<boolean>
 };
 
 export const createUser = async (req: Request, res: Response) => {
-    const { username, email, password } = req.body
+    const { username, email, password, localisation } = req.body;
 
     if (!username || typeof username !== "string") {
         return res.status(400).send({ message: "username invalide" });
@@ -28,12 +28,27 @@ export const createUser = async (req: Request, res: Response) => {
         });
     }
 
+    if (!localisation || typeof localisation !== "string") {
+        return res.status(400).send({ message: "localisation invalide" });
+    }
+
+
+    const existingUserByUsername = await getUserByUsername(username);
+    if (existingUserByUsername) {
+        return res.status(400).send({ message: "Cet username existe déjà" });
+    }
+    const existingUserByEmail = await getUserByEmail(email);
+    if (existingUserByEmail) {
+        return res.status(400).send({ message: "Cet email existe déjà" });
+    }
+
+
     try {
         //  hash le mot de passe
         const hashedPassword = await hashPassword(password);
 
-        // insert en base via le repository et retourne l'utilisateur SANS le mot de passe
-        const createdUser = await createUserRecord(username, email, hashedPassword);
+        // insert en base via le repository (mot de passe hashé) et retourne l'utilisateur
+        const createdUser = await createUserRecord(username, email, hashedPassword, localisation);
 
         return res.status(201).send({
             message: "Utilisateur créé.",

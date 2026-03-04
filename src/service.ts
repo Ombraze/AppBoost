@@ -18,6 +18,10 @@ export const isValidPassword = (password: string): boolean => {
     return hasDigit(password) && hasLetter(password);
 };
 
+export const isValidLocalisation = (localisation: string): boolean => {
+    return /^[a-zA-Z]+$/.test(localisation);
+};
+
 
 /**
  * Vérifie si une chaîne respecte un format d'adresse email valide.
@@ -37,10 +41,10 @@ export const isValidEmail = (email: string): boolean => {
 };
 
 // Hashage du mot de passe
-const hashPassword = async (password: string): Promise<string> => {
+export const hashPassword = async (password: string): Promise<string> => {
     return await bcrypt.hash(password, 10);
 };
 
-const comparePassword = async (password: string, hash: string): Promise<boolean> => {
+export const comparePassword = async (password: string, hash: string): Promise<boolean> => {
     return await bcrypt.compare(password, hash);
 };

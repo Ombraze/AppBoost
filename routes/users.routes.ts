@@ -8,6 +8,9 @@ type UserType = {
     name: string;
     email: string;
     username: string;
+    password: string;
+    createdAt: Date;
+    localisation: string;
 };
 
 // tableau en mémoire pour stocker des utilisateurs
@@ -20,7 +23,7 @@ userRouter.get('/users/:id', async (req: Request, res: Response) => {
     console.log('test route users');
 
     const [rows] = await pool.query(
-        'SELECT id, email, name FROM users WHERE id = ?',
+        'SELECT id, email, name, username, password FROM users WHERE id = ?',
         [id]
     );
     return res.status(200).json(rows);
