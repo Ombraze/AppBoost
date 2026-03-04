@@ -1,6 +1,6 @@
 // imports nécessaires pour les routes utilisateurs
 import { Router, Request, Response } from "express";
-import { pool } from "../src/db.js";
+import { pool } from "../repositories/db.js";
 
 // type pour représenter un utilisateur
 type UserType = {
