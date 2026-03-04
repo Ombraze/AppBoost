@@ -1,9 +1,53 @@
 import { Router, Request, Response } from "express";
-const userRouter = Router()
+import { pool } from "../src/db.js";
+
+type UserType = {
+    id: number;
+    name: string;
+    email: string;
+    username: string;
+};
+
+const users: UserType[] = [];
+const userRouter = Router();
+
+userRouter.get('/users/:id', async (req: Request, res: Response) => {
+    const id: number = Number(req.params.id);
+    console.log('test route users');
+
+    const [rows] = await pool.query(
+        'SELECT id, email, name FROM users WHERE id = ?',
+        [id]
+    );
+    return res.status(200).json(rows);
+});
+
 userRouter.get('/users', (req: Request, res: Response) => {
-    return res.status(200).json({ message: 'Users fetched' })
-})
-userRouter.post('/users', (req: Request, res: Response) => {
-    return res.status(201).json({ message: 'User created' })
-})
-export default userRouter
+    const { username } = req.query;
+
+    if (!username || typeof username !== 'string') {
+        return res.status(200).json(users);
+    }
+
+    const results = users.filter(user =>
+        user.username.toLowerCase() === username.toLowerCase()
+    );
+
+    return res.json(results);
+});
+
+userRouter.post('/users', async (req: Request, res: Response) => {
+    const { name } = req.body;
+    if (!name || typeof name !== 'string' || !name.trim()) {
+        return res.status(400).json({ error: 'Le champ name est requis.' });
+    }
+
+    const result = await pool.query(
+        'INSERT INTO users (name) VALUES (?)',
+        [name.trim()]
+    );
+
+    return res.status(201).json(result);
+});
+
+export default userRouter;
