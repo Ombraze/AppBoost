@@ -70,4 +70,11 @@ export const getUserByCreatedAt = async (createdAt: Date) => {
   );
   return result[0];
 };
+export const FindAllUserByLocalisation = async (localisation: string) => {
+  const [result] = await pool.query(
+    'SELECT * FROM users WHERE localisation = ?',
+    [localisation]
+  );
+  return result;
+};
 
